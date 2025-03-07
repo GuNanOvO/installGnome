@@ -10,26 +10,9 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# 提供用户选择是否更换源
-echo -n "Do you want to change the software source? (y/N): "
-read -r user_choice
-
-if [[ "$user_choice" == "y" || "$user_choice" == "Y" ]]; then
-    # 1. 换源操作
-    echo "Changing software source..."
-    bash <(curl -sSL https://linuxmirrors.cn/main.sh)
-    if [ $? -ne 0 ]; then
-        echo "Failed to change the source. Please check your network connection."
-        exit 1
-    fi
-    echo "Software source changed successfully!"
-else
-    echo "Skipping source change. Using the current software source."
-fi
-
 echo "Starting GNOME desktop environment installation..."
 
-# 2. 更新软件源
+# 1. 更新软件源
 echo "Updating software sources..."
 dnf update -y
 if [ $? -ne 0 ]; then
@@ -37,7 +20,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 3. 安装常用字体
+# 2. 安装常用字体
 echo "Installing fonts..."
 dnf install -y dejavu-fonts liberation-fonts gnu-*-fonts google-*-fonts
 if [ $? -ne 0 ]; then
@@ -45,7 +28,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 4. 安装 Xorg 相关组件（精简版，避免安装过多无用包）
+# 3. 安装 Xorg 相关组件（精简版，避免安装过多无用包）
 echo "Installing Xorg..."
 dnf install -y xorg-x11-apps xorg-x11-drivers xorg-x11-drv-ati \
 xorg-x11-drv-dummy xorg-x11-drv-evdev xorg-x11-drv-fbdev xorg-x11-drv-intel \
@@ -60,7 +43,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 5. 安装 GNOME 及相关组件
+# 4. 安装 GNOME 及相关组件
 echo "Installing GNOME desktop environment..."
 dnf install -y adwaita-icon-theme atk atkmm at-spi2-atk at-spi2-core baobab \
 abattis-cantarell-fonts cheese clutter clutter-gst3 clutter-gtk cogl dconf \
@@ -88,7 +71,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 6. 设置以图形界面启动
+# 5. 设置以图形界面启动
 echo "Setting system to boot into graphical mode..."
 systemctl set-default graphical.target
 if [ $? -ne 0 ]; then
@@ -96,7 +79,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 7. 完成提示
+# 6. 完成提示
 echo "GNOME desktop environment installation completed!"
 echo "Please reboot the system to enter the graphical interface: sudo reboot"
 
