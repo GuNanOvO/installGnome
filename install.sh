@@ -6,47 +6,47 @@
 
 # 检查是否以 root 权限运行
 if [ "$EUID" -ne 0 ]; then
-    echo "请以 root 权限运行此脚本！使用 'sudo' 或切换到 root 用户。"
+    echo "Please run this script as root! Use 'sudo' or switch to the root user."
     exit 1
 fi
 
 # 提供用户选择是否更换源
-echo "是否要更换软件源? (y/n)"
+echo -n "Do you want to change the software source? (y/N): "
 read -r user_choice
 
 if [[ "$user_choice" == "y" || "$user_choice" == "Y" ]]; then
     # 1. 换源操作
-    echo "正在更换软件源..."
+    echo "Changing software source..."
     bash <(curl -sSL https://linuxmirrors.cn/main.sh)
     if [ $? -ne 0 ]; then
-        echo "换源失败，请检查网络连接。"
+        echo "Failed to change the source. Please check your network connection."
         exit 1
     fi
-    echo "软件源更换完成！"
+    echo "Software source changed successfully!"
 else
-    echo "跳过换源操作，继续使用当前软件源。"
+    echo "Skipping source change. Using the current software source."
 fi
 
-echo "开始安装 GNOME 桌面环境..."
+echo "Starting GNOME desktop environment installation..."
 
 # 2. 更新软件源
-echo "正在更新软件源..."
+echo "Updating software sources..."
 dnf update -y
 if [ $? -ne 0 ]; then
-    echo "软件源更新失败，请检查网络或源配置后重试。"
+    echo "Failed to update software sources. Please check your network or source configuration and try again."
     exit 1
 fi
 
 # 3. 安装常用字体
-echo "正在安装字体..."
+echo "Installing fonts..."
 dnf install -y dejavu-fonts liberation-fonts gnu-*-fonts google-*-fonts
 if [ $? -ne 0 ]; then
-    echo "字体安装失败，请检查软件源或网络连接。"
+    echo "Font installation failed. Please check the software source or network connection."
     exit 1
 fi
 
 # 4. 安装 Xorg 相关组件（精简版，避免安装过多无用包）
-echo "正在安装 Xorg..."
+echo "Installing Xorg..."
 dnf install -y xorg-x11-apps xorg-x11-drivers xorg-x11-drv-ati \
 xorg-x11-drv-dummy xorg-x11-drv-evdev xorg-x11-drv-fbdev xorg-x11-drv-intel \
 xorg-x11-drv-libinput xorg-x11-drv-nouveau xorg-x11-drv-qxl \
@@ -56,12 +56,12 @@ xorg-x11-font-utils xorg-x11-server xorg-x11-server-utils xorg-x11-server-Xephyr
 xorg-x11-server-Xspice xorg-x11-util-macros xorg-x11-utils xorg-x11-xauth \
 xorg-x11-xbitmaps xorg-x11-xinit xorg-x11-xkb-utils
 if [ $? -ne 0 ]; then
-    echo "Xorg 安装失败，请检查软件源或网络连接。"
+    echo "Xorg installation failed. Please check the software source or network connection."
     exit 1
 fi
 
 # 5. 安装 GNOME 及相关组件
-echo "正在安装 GNOME 桌面环境..."
+echo "Installing GNOME desktop environment..."
 dnf install -y adwaita-icon-theme atk atkmm at-spi2-atk at-spi2-core baobab \
 abattis-cantarell-fonts cheese clutter clutter-gst3 clutter-gtk cogl dconf \
 dconf-editor devhelp eog epiphany evince evolution-data-server file-roller folks \
@@ -84,20 +84,20 @@ mm-common mutter nautilus orca pango pangomm libphodav python3-pyatspi \
 python3-gobject rest rygel simple-scan sushi sysprof tepl totem totem-pl-parser \
 tracker3 tracker3-miners vala vte291 yelp yelp-tools yelp-xsl zenity
 if [ $? -ne 0 ]; then
-    echo "GNOME 安装失败，请检查软件源或网络连接。"
+    echo "GNOME installation failed. Please check the software source or network connection."
     exit 1
 fi
 
 # 6. 设置以图形界面启动
-echo "设置系统以图形界面启动..."
+echo "Setting system to boot into graphical mode..."
 systemctl set-default graphical.target
 if [ $? -ne 0 ]; then
-    echo "设置图形界面启动失败，请手动检查 systemctl 配置。"
+    echo "Failed to set graphical mode. Please check systemctl settings manually."
     exit 1
 fi
 
 # 7. 完成提示
-echo "GNOME 桌面环境安装完成！"
-echo "请重启系统以进入图形界面：sudo reboot"
+echo "GNOME desktop environment installation completed!"
+echo "Please reboot the system to enter the graphical interface: sudo reboot"
 
 exit 0
