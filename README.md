@@ -12,7 +12,5 @@ __简单的用于OpenEular的一键换源与安装gnome桌面的脚本__
 终端输入以下命令：
 
 ```bash
-curl -sL https://kkgithub.com/https://github.com/GuNanOvO/installGnome/blob/main/install.sh | bash
+curl -sL https://ghfast.top/https://github.com/GuNanOvO/installGnome/blob/main/install.sh | bash
 ```
-
-使用[KGithub](https://help.kkgithub.com)作为加速服务🥰
